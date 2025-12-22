@@ -1,0 +1,48 @@
+class Solution {
+    public String alphabetBoardPath(String target) {
+        StringBuilder sb = new StringBuilder();
+        int r=0;
+        int c=0; 
+        
+        for (char ch : target.toCharArray()) {
+            int idx=ch-'a';
+            int tr=idx/5;
+            int tc=idx%5;
+            
+           
+            if (ch=='z') {
+               
+                while (c>tc) {
+                     sb.append('L'); c--; 
+                }
+                while (c<tc) { 
+                    sb.append('R'); c++; 
+                }
+                while (r<tr) {
+                     sb.append('D'); r++; 
+                }
+                while (r>tr) { 
+                    sb.append('U'); r--; 
+                }
+            } else {
+                
+                while (r>tr) { 
+                    sb.append('U'); r--;
+                 }
+                while (r<tr) { 
+                    sb.append('D'); r++;
+                     }
+                while (c>tc) {
+                     sb.append('L'); c--;
+                }
+                while (c<tc) { 
+                    sb.append('R'); c++; 
+                }
+            }
+            
+            sb.append('!');
+        }
+        
+        return sb.toString();
+    }
+}

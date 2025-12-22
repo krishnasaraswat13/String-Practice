@@ -1,0 +1,85 @@
+import java.math.BigInteger;
+class Solution {
+    public String smallestPalindrome(String s, int k) {
+        
+
+        int[] freq = new int[26];
+        for (char c : s.toCharArray()) freq[c - 'a']++;
+
+        // Feasibility and middle char
+        int odd = 0;
+        char mid = 0;
+        for (int i = 0; i < 26; i++) {
+            if ((freq[i] & 1) == 1) {
+                odd++;
+                mid = (char) ('a' + i);
+            }
+        }
+        if (odd > 1) return "";
+
+        int n = s.length();
+        int halfLen = n / 2;
+
+        // Half multiset
+        int[] halfFreq = new int[26];
+        for (int i = 0; i < 26; i++) halfFreq[i] = freq[i] / 2;
+
+        // Compute total permutations of half = halfLen! / Π(freq[i]!)
+        BigInteger totalPerms = multinomial(halfFreq, halfLen);
+        BigInteger kBI = BigInteger.valueOf(k);
+        if (kBI.compareTo(totalPerms) > 0) return "";
+
+        // Incremental construction
+        StringBuilder half = new StringBuilder(halfLen);
+        BigInteger currentCount = totalPerms;
+        int remainingTotal = halfLen;
+
+        for (int pos = 0; pos < halfLen; pos++) {
+            for (int c = 0; c < 26; c++) {
+                int fc = halfFreq[c];
+                if (fc == 0) continue;
+
+                // Block size = currentCount * fc / remainingTotal
+                BigInteger block = currentCount
+                        .multiply(BigInteger.valueOf(fc))
+                        .divide(BigInteger.valueOf(remainingTotal));
+
+                if (kBI.compareTo(block) > 0) {
+                    kBI = kBI.subtract(block); // skip this block
+                } else {
+                    // Choose this character: update currentCount & counts
+                    half.append((char) ('a' + c));
+                    // New currentCount is count of remaining multiset after taking one c
+                    currentCount = block;
+                    halfFreq[c]--;
+                    remainingTotal--;
+                    break;
+                }
+            }
+        }
+
+        // Build full palindrome
+        StringBuilder res = new StringBuilder(n);
+        res.append(half);
+        if ((n & 1) == 1) res.append(mid);
+        res.append(new StringBuilder(half).reverse());
+        return res.toString();
+    }
+
+    // multinomial: total! / Π(freq[i]!)
+    private BigInteger multinomial(int[] freq, int total) {
+        BigInteger numer = factorialBI(total);
+        for (int f : freq) {
+            if (f > 1) numer = numer.divide(factorialBI(f));
+        }
+        return numer;
+    }
+
+    private BigInteger factorialBI(int n) {
+        BigInteger res = BigInteger.ONE;
+        for (int i = 2; i <= n; i++) {
+            res = res.multiply(BigInteger.valueOf(i));
+        }
+        return res;
+    }
+}
