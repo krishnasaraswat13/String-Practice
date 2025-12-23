@@ -1,0 +1,162 @@
+//tle wala with recursion
+
+
+import java.util.*;
+
+class Solution {
+    public boolean isSolvable(String[] words, String result) {
+        for (int i = 0; i < words.length; i++) {
+            words[i] = new StringBuilder(words[i]).reverse().toString();
+        }
+        result = new StringBuilder(result).reverse().toString();
+
+        Map<Character, Integer> map = new HashMap<>();
+        boolean[] used = new boolean[10];
+        return dfs(words, result, 0, 0, map, used);
+    }
+
+    private boolean dfs(String[] words, String result, int col, int carry,
+                        Map<Character,Integer> map, boolean[] used) {
+        if (col == result.length()) {
+            return carry == 0;
+        }
+
+        int sum = carry;
+        for (String w : words) {
+            if (col < w.length()) {
+                char c = w.charAt(col);
+                if (map.containsKey(c)) {
+                    sum += map.get(c);
+                } else {
+                    for (int d = 0; d <= 9; d++) {
+                        if (!used[d]) {
+                            if (d == 0 && w.length() > 1 && col == w.length()-1) continue; 
+                            map.put(c, d);
+                            used[d] = true;
+                            if (dfs(words, result, col, carry, map, used)) return true;
+                            used[d] = false;
+                            map.remove(c);
+                        }
+                    }
+                    return false; 
+                }
+            }
+        }
+
+        char rc = result.charAt(col);
+        int digit = sum % 10;
+        int newCarry = sum / 10;
+
+        if (map.containsKey(rc)) {
+            if (map.get(rc) != digit) return false;
+            return dfs(words, result, col+1, newCarry, map, used);
+        } else {
+            if (used[digit]) return false;
+            if (digit == 0 && result.length() > 1 && col == result.length()-1) return false; 
+            map.put(rc, digit);
+            used[digit] = true;
+            if (dfs(words, result, col+1, newCarry, map, used)) return true;
+            used[digit] = false;
+            map.remove(rc);
+        }
+        return false;
+    }
+}
+
+
+
+//with dfs
+
+class Solution {
+    public boolean isSolvable(String[] words, String result) {
+        Map<Character, Integer> map = new HashMap<>();
+            boolean[] used = new boolean[10];
+
+            Set<Character> leading = new HashSet<>();
+            for (String w : words) if (w.length() > 1) leading.add(w.charAt(0));
+            if (result.length() > 1) leading.add(result.charAt(0));
+
+            for (String w : words) for (char c : w.toCharArray()) map.putIfAbsent(c, -1);
+            for (char c : result.toCharArray()) map.putIfAbsent(c, -1);
+
+            int maxWordLen = 0;
+            for (String w : words) maxWordLen = Math.max(maxWordLen, w.length());
+            int maxCols = Math.max(maxWordLen, result.length());
+
+            return dfs(words, result, 0, 0, map, used, leading, maxCols);
+        }
+
+        private boolean dfs(String[] words, String result, int col, int carry,
+            Map<Character,Integer> map, boolean[] used,
+            Set<Character> leading, int maxCols) {
+
+            if (col == result.length()) {
+                if (carry != 0) return false;
+                for (String w : words) {
+                    if (w.length() > col) return false;
+                }
+                long sum = 0;
+                for (String w : words) {
+                    long val = 0;
+                    for (int i = 0; i < w.length(); i++) {
+                        int d = map.get(w.charAt(i));
+                        if (d < 0) return false;
+                        val = val * 10 + d;
+                    }
+                    sum += val;
+                }
+                long resVal = 0;
+                for (int i = 0; i < result.length(); i++) {
+                    int d = map.get(result.charAt(i));
+                    if (d < 0) return false;
+                    resVal = resVal * 10 + d;
+                }
+                return sum == resVal;
+            }
+
+            int sum = carry;
+            for (String w : words) {
+                int idx = w.length() - 1 - col;
+                if (idx >= 0) {
+                    char c = w.charAt(idx);
+                    Integer m = map.get(c);
+                    if (m >= 0) {
+                        sum += m;
+                    } else {
+                        for (int d = 0; d <= 9; d++) {
+                            if (used[d]) continue;
+                            if (d == 0 && leading.contains(c)) continue;
+
+                            map.put(c, d);
+                            used[d] = true;
+                            if (dfs(words, result, col, carry, map, used, leading, maxCols)) return true;
+                            used[d] = false;
+                            map.put(c, -1);
+                        }
+                        return false; 
+                    }
+                }
+            }
+
+            int digit = sum % 10;
+            int newCarry = sum / 10;
+            int rIdx = result.length() - 1 - col;
+            char rc = result.charAt(rIdx);
+
+            Integer mr = map.get(rc);
+            if (mr >= 0) {
+                if (mr != digit) return false;
+                return dfs(words, result, col + 1, newCarry, map, used, leading, maxCols);
+            } else {
+                if (used[digit]) return false;
+                if (digit == 0 && leading.contains(rc)) return false;
+
+                map.put(rc, digit);
+                used[digit] = true;
+                if (dfs(words, result, col + 1, newCarry, map, used, leading, maxCols)) return true;
+                used[digit] = false;
+                map.put(rc, -1);
+                return false;
+        }
+    }
+}

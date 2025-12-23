@@ -1,0 +1,38 @@
+class Solution {
+    public String smallestString(String s) {
+        StringBuilder ans=new StringBuilder();
+        int i=0;
+        boolean found =false;
+        for(i=0;i<s.length();i++){
+            char curr=s.charAt(i);
+            if(curr!='a' && found==false){
+                found=true;
+                while(i<s.length()){
+                    curr=s.charAt(i);
+                    if(curr!='a'){
+                        curr--;
+                        ans.append(curr);
+                    }
+                    else{
+                        i--;
+                        break;
+                    }
+                    i++;
+                }
+            }
+                else{
+                    ans.append(curr);
+                }
+            
+
+        }
+        if(found==false){
+            ans=new StringBuilder();
+            for(i=0;i<s.length()-1;i++){
+                ans.append(s.charAt(i));
+            }
+            ans.append('z');
+        }
+        return ans.toString();
+    }
+}

@@ -1,0 +1,28 @@
+class Solution {
+    public String generateTag(String c) {
+        String caption=c.trim();
+        StringBuilder s=new StringBuilder();
+        s.append('#');
+        boolean capitalizeNext = false;
+
+        for(int i=0;i<caption.length();i++){
+            char ch=caption.charAt(i);
+            if (Character.isLetterOrDigit(ch)) {
+                if (capitalizeNext) {
+                    s.append(Character.toUpperCase(ch));
+                    capitalizeNext=false;
+                } else {
+                    s.append(Character.toLowerCase(ch));
+                }
+            } else if (Character.isWhitespace(ch)) {
+                capitalizeNext=true; 
+            }
+            if(s.length()==100){
+                break;
+            }
+           
+        }
+
+        return s.toString();
+    }
+}
