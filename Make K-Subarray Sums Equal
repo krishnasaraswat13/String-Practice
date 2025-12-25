@@ -1,0 +1,43 @@
+class Solution {
+    public long makeSubKSumEqual(int[] arr, int k) {
+        int n=arr.length;
+        long ans=0;
+        int vis[]=new int[n];
+        for(int i=0;i<n;i++){
+            if(vis[i]==1) continue;
+            ArrayList<Integer> temp =new ArrayList<>();
+            
+            int idx=i;
+            while(vis[idx]!=1){
+                int val=arr[idx];
+                vis[idx]++;
+                idx+=k;
+                idx%=n;
+               
+                temp.add(val);
+            }
+            long curr=0;
+            Collections.sort(temp);
+            int sz=temp.size();
+            if(sz%2==1){
+                int mid=sz/2;
+                curr=find(temp.get(mid),temp);
+            }
+            else{
+                int mid=sz/2;
+                curr=find(temp.get(mid),temp);
+                curr=Math.min(curr,find(temp.get(mid-1),temp));
+            }
+            ans+=curr;
+        }
+        return ans;
+    }
+    long find(int val,ArrayList<Integer> temp){
+        long ans=0;
+        for(int i=0;i<temp.size();i++){
+            long curr=Math.abs(temp.get(i)-val);
+            ans+=curr;
+        }
+        return ans;
+    }
+}

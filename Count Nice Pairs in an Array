@@ -1,0 +1,23 @@
+class Solution {
+    public int countNicePairs(int[] nums) {
+        int mod=1_000_000_007;
+        HashMap<Integer,Long> freq=new HashMap<>();
+        for(int num: nums){
+            int diff=num-rev(num);
+            freq.put(diff,freq.getOrDefault(diff,0L)+1);
+        }
+        long res=0;
+        for(long cnt:freq.values()){
+            res=(res+(cnt*(cnt-1)/2)%mod)%mod;
+        }
+        return (int)res;
+    }
+    int rev(int x){
+        int res=0;
+        while(x>0){
+            res=res*10+(x%10);
+            x/=10;
+        }
+        return res;
+    }
+}

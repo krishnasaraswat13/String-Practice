@@ -1,0 +1,38 @@
+class Solution {
+    public int[] countRectangles(int[][] rectangles, int[][] points) {
+        List<Integer>[] byHt=new ArrayList[101];
+        for(int i=0;i<=100;i++){
+            byHt[i]=new ArrayList<>();
+        }
+        for(int []rect:rectangles){
+            int l=rect[0],h=rect[1];
+            byHt[h].add(l);
+        }
+        for(int i=0;i<101;i++){
+            Collections.sort(byHt[i]);
+        }
+        int res[]=new int[points.length];
+        for(int j=0;j<points.length;j++){
+            int x=points[j][0],y=points[j][1];
+            int cnt=0;
+            for(int h=y;h<=100;h++){
+                List<Integer> lengths=byHt[h];
+                if(lengths.isEmpty()) continue;
+
+                int idx=help(lengths,x);
+                cnt+=lengths.size()-idx; 
+            }
+            res[j]=cnt;
+        }
+        return res;
+    }
+    int help(List<Integer> ls,int t){
+        int l=0;int h=ls.size();
+        while(l<h){
+            int m=l+(h-l)/2;
+            if(ls.get(m)<t) l=m+1;
+            else h=m;
+        }
+        return l;
+    }
+}

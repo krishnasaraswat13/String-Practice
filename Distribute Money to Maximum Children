@@ -1,0 +1,29 @@
+class Solution {
+    public int distMoney(int money, int children) {
+        if(money<children){
+            return -1;
+        }
+        if(money<8){
+            return 0;
+        }
+        money -= children;
+        int res = Math.min(money / 7, children);
+         money -= res * 7;
+
+        // if(money==9 && children>2){
+        //     return -1;
+        // }
+        // if(money==12 && children==2){
+        //     return -1;
+        // }
+
+        // int r=money%8;
+       
+        // return Integer.floor(money/8)+(money%8);
+        if (res == children && money > 0) res--; //this case is for ki saare bacche 8 8 le skte pr fir bhi paise bach rhe to ek bacche ko extra dene hi pdenge
+         else if (res == children - 1 && money == 3) res--; //if one child is left and money left is 3 means total 4 to that child which we cant give so oe extra 8 distributed child is minused
+
+        return res;
+
+    }
+}
