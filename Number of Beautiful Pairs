@@ -1,0 +1,28 @@
+class Solution {
+    public int countBeautifulPairs(int[] nums) {
+        int n=nums.length;
+        int c=0;
+        for(int i=0;i<n;i++){
+            int first=fist(nums[i]);
+            for(int j=i+1;j<n;j++){
+                int last=nums[j]%10;
+                if(gcd(first,last)==1){
+                    c++;
+                }
+            }
+        }
+        return c;
+    }
+    int fist(int x){
+        while(x>=10) x/=10;
+        return x;
+    }
+    int gcd(int a,int b){
+        while(b!=0){
+            int temp=a%b;
+            a=b;
+            b=temp;
+        }
+        return a;
+    }
+}

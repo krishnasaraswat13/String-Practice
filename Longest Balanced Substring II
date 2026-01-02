@@ -1,0 +1,80 @@
+import java.util.Arrays;
+
+class Solution {
+    public int longestBalanced(String s) {
+        int n = s.length();
+        if (n <= 1) return n;
+
+        int ans = 0;
+
+        int count = 1;
+        for (int i = 1; i < n; i++) {
+            if (s.charAt(i) == s.charAt(i - 1)) count++;
+            else {
+                ans = Math.max(ans, count);
+                count = 1;
+            }
+        }
+        ans = Math.max(ans, count);
+
+        int[] seen = new int[2 * n + 1];
+        ans = Math.max(ans, solvePair(s, 'a', 'b', seen, n));
+        ans = Math.max(ans, solvePair(s, 'b', 'c', seen, n));
+        ans = Math.max(ans, solvePair(s, 'a', 'c', seen, n));
+        
+        ans = Math.max(ans, solveTrio(s));
+
+        return ans;
+    }
+
+    private int solvePair(String s, char x, char y, int[] seen, int n) {
+        for (int i = 0; i < seen.length; i++) seen[i] = -2;
+        
+        int diff = n; 
+        seen[diff] = -1;
+        
+        int res = 0;
+        int lastReset = -1;
+        
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (c == x) diff++;
+            else if (c == y) diff--;
+            else {
+               
+                lastReset = i;
+                diff = n;
+                seen[diff] = i;
+                continue;
+            }
+
+            if (seen[diff] >= lastReset) {
+                res = Math.max(res, i - seen[diff]);
+            } else {
+                seen[diff] = i;
+            }
+        }
+        return res;
+    }
+
+    private int solveTrio(String s) {
+       Map<Long, Integer> map = new HashMap<>();
+        map.put(0L, -1);
+        int a = 0, b = 0, c = 0, res = 0;
+
+        for (int i = 0; i < s.length(); i++) {
+            char curr = s.charAt(i);
+            if (curr == 'a') a++;
+            else if (curr == 'b') b++;
+            else if (curr == 'c') c++;
+
+            long key = ((long)(a - b) << 32) | ((long)(b - c) & 0xFFFFFFFFL);
+            if (map.containsKey(key)) {
+                res = Math.max(res, i - map.get(key));
+            } else {
+                map.put(key, i);
+            }
+        }
+        return res;
+    }
+}

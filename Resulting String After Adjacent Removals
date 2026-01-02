@@ -1,0 +1,19 @@
+class Solution {
+    boolean isC(char a,char b){
+        int diff=Math.abs(a-b);
+        return (diff==1 || diff==25);
+    }
+    public String resultingString(String s) {
+        StringBuilder stack=new StringBuilder();
+        for(char ch:s.toCharArray()){
+            int l=stack.length();
+            if(l>0 && isC(stack.charAt(l-1),ch)){
+                stack.deleteCharAt(l-1);
+            }
+            else{
+                stack.append(ch);
+            }
+        }
+        return stack.toString();
+    }
+}

@@ -1,0 +1,29 @@
+class Solution {
+    public int minArrivalsToDiscard(int[] arrivals, int w, int m) {
+        int n=arrivals.length;
+        Map<Integer,Integer> freq=new HashMap<>();
+        boolean kept[]=new boolean[n];
+        int d=0;
+        for(int i=0;i<n;i++){
+            int t=arrivals[i];
+            if(i>=w){
+                int oldType=arrivals[i-w];
+                if(kept[i-w]){
+                    freq.put(oldType,freq.get(oldType)-1);
+                    if(freq.get(oldType)==0) freq.remove(oldType);
+                }
+            }
+            int cnt=freq.getOrDefault(t,0);
+            if(cnt<m){
+                kept[i]=true;
+                freq.put(t,cnt+1);
+            }
+            else{
+                d++;
+                kept[i]=false;
+            }
+
+        }
+        return d;
+    }
+}

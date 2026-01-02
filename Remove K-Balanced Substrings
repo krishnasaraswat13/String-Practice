@@ -1,0 +1,17 @@
+class Solution {
+    public String removeSubstring(String s, int k) {
+        StringBuilder sb = new StringBuilder();
+        String pattern = "(".repeat(k) + ")".repeat(k); 
+
+        for (char c : s.toCharArray()) {
+            sb.append(c);
+            if (sb.length() >= 2 * k && 
+                sb.substring(sb.length() - 2 * k).equals(pattern)) {
+                sb.setLength(sb.length() - 2 * k);
+            }
+        }
+        return sb.toString();
+
+
+    }
+}

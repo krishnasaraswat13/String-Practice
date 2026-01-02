@@ -1,0 +1,50 @@
+class Solution {
+    public int countBinaryPalindromes(long n) {
+        if(n==0){
+            return 1;
+        }
+        int L=bitLength(n);
+        long total=1;
+
+        for(int l=1;l<L;l++){
+            int half=(l+1)/2;
+            total+=(1L<<(half-1));
+        }
+        int half=(L+1)/2;
+        long prefixN=n>>(L-half);
+        long minPrefix=1L<<(half-1);
+
+        long p=make(prefixN,L);
+        if(p<=n){
+            total+=(prefixN-minPrefix+1);
+        }
+        else{
+            total+=(prefixN-minPrefix);
+        }
+        return (int)total;
+    }
+    long make(long prefix,int L){
+        int half=(L+1)/2;
+        if(L%2==0){
+            long left=prefix;
+            long right=rev(left,half);
+            return (left<<half)|right;
+        }
+        else{
+            long left=prefix>>1;
+            long right=rev(left,half-1);
+            return (prefix<<(half-1))|right;
+        }
+    }
+    long rev(long x,int k){
+        long res=0;
+        for(int i=0;i<k;i++){
+            res=(res<<1)|(x&1);
+            x>>=1;
+        }
+        return res;
+    }
+    int bitLength(Long n){
+        return 64-Long.numberOfLeadingZeros(n);
+    }
+}

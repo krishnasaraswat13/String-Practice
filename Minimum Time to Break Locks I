@@ -1,0 +1,25 @@
+class Solution {
+    
+    public int findMinimumTime(List<Integer> strength, int k) {
+        int n=strength.size();
+        boolean[] vis=new boolean[n];
+        return dfs(strength,vis,k,1,0,0);
+    }
+    int dfs(List<Integer> strength,boolean[] vis,int k,int x,int time,int broken){
+        int n=strength.size();
+        if(broken==n){
+            return time;
+        }
+        int ans=Integer.MAX_VALUE;
+        for(int i=0;i<n;i++){
+            if(!vis[i]){
+                int need=strength.get(i);
+                int wait=(int) Math.ceil((double) need/x);
+                vis[i]=true;
+                ans=Math.min(ans,dfs(strength,vis,k,x+k,time+wait,broken+1));
+                vis[i]=false;
+            }
+        }
+        return ans;
+    }
+}

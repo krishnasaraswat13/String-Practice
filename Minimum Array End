@@ -1,0 +1,14 @@
+class Solution {
+    public long minEnd(int n, int x) {
+       
+    long curr = x;
+        for (int i = 1; i < n; i++) {
+            long candidate = (curr + 1) | x;
+            curr = candidate;
+        }
+        return curr;
+
+    }
+}
+///the intution is that keep the set bits of x untouched, for all the other bits, fill the set bits of v from right to left in order one by one.
+//it was easy but due to tle i have to use by this way
