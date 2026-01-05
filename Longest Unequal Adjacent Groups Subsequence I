@@ -1,0 +1,15 @@
+class Solution {
+    public List<String> getLongestSubsequence(String[] words, int[] groups) {
+        List<String> subsequence = new ArrayList<>();
+        Integer lastGroup = null;
+
+        for (int i = 0; i < words.length; i++) {
+            if (lastGroup == null || groups[i] != lastGroup) {
+                subsequence.add(words[i]);
+                lastGroup = groups[i];
+            }
+        }
+        return subsequence;
+
+    }
+}
