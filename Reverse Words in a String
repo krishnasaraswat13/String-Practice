@@ -1,0 +1,26 @@
+class Solution {
+    public String reverseWords(String s) {
+        String[] arr = s.trim().split("\\s+");
+    
+    // Reverse the array
+    int left = 0, right = arr.length - 1;
+    while (left < right) {
+        String temp = arr[left];
+        arr[left] = arr[right];
+        arr[right] = temp;
+        left++;
+        right--;
+    }
+    
+    // Join the reversed words using a StringBuilder
+    StringBuilder st = new StringBuilder();
+    for (int i = 0; i < arr.length; i++) {
+        st.append(arr[i]);
+        if (i < arr.length - 1) {
+            st.append(" ");
+        }
+    }
+    
+    return st.toString();
+    }
+}
